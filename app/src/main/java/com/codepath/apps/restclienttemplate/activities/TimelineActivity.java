@@ -8,8 +8,10 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.codepath.apps.restclienttemplate.R;
@@ -18,9 +20,15 @@ import com.codepath.apps.restclienttemplate.fragments.MentionsFragment;
 import com.codepath.apps.restclienttemplate.fragments.TimelineFragment;
 import com.codepath.apps.restclienttemplate.models.Tweet;
 import com.codepath.apps.restclienttemplate.utils.SmartFragmentStatePagerAdapter;
+import com.codepath.apps.restclienttemplate.utils.Utils;
+import com.raizlabs.android.dbflow.sql.language.Select;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+
+import static com.codepath.apps.restclienttemplate.R.id.swipeContainer;
 
 public class TimelineActivity extends AppCompatActivity {
 
@@ -140,6 +148,10 @@ public class TimelineActivity extends AppCompatActivity {
         }
     }
 
+    }
+
+
+
    /*client = TwitterApp.getRestClient();
 
 
@@ -199,4 +211,4 @@ public class TimelineActivity extends AppCompatActivity {
             }
         });
     }*/
-}
+

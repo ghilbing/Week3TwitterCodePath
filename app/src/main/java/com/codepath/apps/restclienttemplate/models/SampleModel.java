@@ -21,51 +21,51 @@ import java.util.List;
  * 
  */
 @Table(database = MyDatabase.class)
-public class SampleModel extends BaseModel {
+	public class SampleModel extends BaseModel {
 
-	@PrimaryKey
-	@Column
-	Long id;
+		@PrimaryKey
+		@Column
+		Long id;
 
-	// Define table fields
-	@Column
-	private String name;
+		// Define table fields
+		@Column
+		private String name;
 
-	public SampleModel() {
-		super();
-	}
-
-	// Parse model from JSON
-	public SampleModel(JSONObject object){
-		super();
-
-		try {
-			this.name = object.getString("title");
-		} catch (JSONException e) {
-			e.printStackTrace();
+		public SampleModel() {
+			super();
 		}
-	}
 
-	// Getters
-	public String getName() {
-		return name;
-	}
+		// Parse model from JSON
+		public SampleModel(JSONObject object){
+			super();
 
-	// Setters
-	public void setName(String name) {
-		this.name = name;
-	}
+			try {
+				this.name = object.getString("title");
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
 
-	/* The where class in this code below will be marked red until you first compile the project, since the code 
+		// Getters
+		public String getName() {
+			return name;
+		}
+
+		// Setters
+		public void setName(String name) {
+			this.name = name;
+		}
+
+	/* The where class in this code below will be marked red until you first compile the project, since the code
 	 * for the SampleModel_Table class is generated at compile-time.
 	 */
-	
-	// Record Finders
-	public static SampleModel byId(long id) {
-		return new Select().from(SampleModel.class).where(SampleModel_Table.id.eq(id)).querySingle();
-	}
 
-	public static List<SampleModel> recentItems() {
-		return new Select().from(SampleModel.class).orderBy(SampleModel_Table.id, false).limit(300).queryList();
-	}
+		// Record Finders
+		public static SampleModel byId(long id) {
+			return new Select().from(SampleModel.class).where(SampleModel_Table.id.eq(id)).querySingle();
+		}
+
+		public static List<SampleModel> recentItems() {
+			return new Select().from(SampleModel.class).orderBy(SampleModel_Table.id, false).limit(300).queryList();
+		}
 }
