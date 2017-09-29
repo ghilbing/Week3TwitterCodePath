@@ -3,6 +3,9 @@ package com.codepath.apps.restclienttemplate.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -12,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.codepath.apps.restclienttemplate.MyDatabase;
+import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.TwitterClient;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.ForeignKey;
@@ -19,6 +23,8 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.BaseModel;
+
+import butterknife.Bind;
 
 import static android.R.attr.id;
 
@@ -52,6 +58,12 @@ public class Tweet extends BaseModel implements Parcelable{
 
     @Column
     private int favoriteCount;
+
+    @Column
+    private Boolean isRetweeted;
+
+    @Column
+    private Boolean isFavorited;
 
 
 
@@ -102,6 +114,32 @@ public class Tweet extends BaseModel implements Parcelable{
         this.retweetCount = retweetCount;
     }
 
+    public Boolean getRetweeted() {
+        return isRetweeted;
+    }
+
+    public void setRetweeted(Boolean retweeted) {
+        isRetweeted = retweeted;
+    }
+
+    public Boolean getFavorited() {
+        return isFavorited;
+    }
+
+    public void setFavorited(Boolean favorited) {
+        isFavorited = favorited;
+    }
+
+    public boolean isRetweeted() {
+        return isRetweeted;
+    }
+
+    public Boolean isFavorited() {
+
+        return isFavorited;
+
+    }
+
     @Nullable
     public Entity getEntity() {
         return entity;
@@ -134,6 +172,15 @@ public class Tweet extends BaseModel implements Parcelable{
             tweet.retweetCount = json.getInt("retweet_count");
             tweet.favoriteCount = json.getInt("favorite_count");
 
+            tweet.isRetweeted = json.getBoolean("retweeted");
+            tweet.isFavorited = json.getBoolean("favorited");
+            if(tweet.getBody().startsWith("RT")){
+                tweet.isFavorited = false;
+                tweet.favoriteCount = 0;
+
+
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -165,6 +212,7 @@ public class Tweet extends BaseModel implements Parcelable{
         entity = (Entity) in.readValue(Entity.class.getClassLoader());
         retweetCount = in.readInt();
         favoriteCount = in.readInt();
+
     }
 
     public static Tweet byId(long id){
@@ -204,4 +252,7 @@ public class Tweet extends BaseModel implements Parcelable{
             return new Tweet[size];
         }
     };
+
+
+
 }

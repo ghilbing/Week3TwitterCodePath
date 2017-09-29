@@ -3,6 +3,7 @@ package com.codepath.apps.restclienttemplate.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.codepath.apps.restclienttemplate.MyDatabase;
 import com.raizlabs.android.dbflow.annotation.Column;
@@ -11,9 +12,11 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
@@ -168,6 +171,23 @@ public class User extends BaseModel implements Parcelable{
         tagline = in.readString();
         followersCount = in.readInt();
         followingCount = in.readInt();
+    }
+
+    public static ArrayList<User> fromJSONArray(JSONArray jsonArray){
+
+        ArrayList<User> result = new ArrayList<>();
+        for(int i=0; i< jsonArray.length(); i++){
+
+            try {
+                Log.i("FOLLOW", jsonArray.getJSONObject(i).toString());
+                User user = fromJson(jsonArray.getJSONObject(i));
+                result.add(user);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return result;
     }
 
     @Override

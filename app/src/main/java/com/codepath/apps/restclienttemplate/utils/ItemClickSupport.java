@@ -8,7 +8,7 @@ import com.codepath.apps.restclienttemplate.R;
 /**
  * Created by gretel on 9/28/17.
  */
-/*
+
 public class ItemClickSupport {
     private final RecyclerView mRecyclerView;
     private OnItemClickListener mOnItemClickListener;
@@ -97,4 +97,3 @@ public class ItemClickSupport {
         boolean onItemLongClicked(RecyclerView recyclerView, int position, View v);
     }
 }
-*/

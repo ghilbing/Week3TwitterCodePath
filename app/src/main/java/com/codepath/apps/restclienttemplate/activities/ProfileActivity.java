@@ -11,6 +11,7 @@ import android.support.v7.widget.Toolbar;
 import android.test.suitebuilder.TestMethod;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -20,10 +21,12 @@ import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.TwitterApp;
 import com.codepath.apps.restclienttemplate.TwitterClient;
 import com.codepath.apps.restclienttemplate.fragments.UserFragment;
+import com.codepath.apps.restclienttemplate.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -52,6 +55,12 @@ public class ProfileActivity extends AppCompatActivity {
     TextView tvFollowingCount;
     @Bind(R.id.tvTagline)
     TextView tagline;
+
+    private User user;
+
+    public enum Follow {
+        Following, Follower;
+    };
 
 
     TwitterClient client = TwitterApp.getRestClient();
@@ -113,6 +122,20 @@ public class ProfileActivity extends AppCompatActivity {
             client.getCredentials(handler);
         }
 
+    }
+
+    public void onFollowingCountClick(View view) {
+        Intent intent = new Intent(this, FollowActivity.class);
+        intent.putExtra("user", Parcels.wrap(user));
+        intent.putExtra("Follow", Follow.Following);
+        startActivity(intent);
+    }
+
+    public void onFollowersCountClick(View view) {
+        Intent intent = new Intent(this, FollowActivity.class);
+        intent.putExtra("user", Parcels.wrap(user));
+        intent.putExtra("Follow", Follow.Follower);
+        startActivity(intent);
     }
 
     private JsonHttpResponseHandler handler = new JsonHttpResponseHandler(){

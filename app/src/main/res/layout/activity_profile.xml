@@ -89,6 +89,7 @@
                 style="@style/RegularText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:onClick="onFollowersCountClick"
                 android:gravity="center" />
 
             <TextView
@@ -96,6 +97,7 @@
                 android:gravity="center"
                 style="@style/RegularText"
                 android:layout_width="wrap_content"
+                android:onClick="onFollowingCountClick"
                 android:layout_height="wrap_content" />
 
         </TableRow>
