@@ -20,6 +20,8 @@ import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
+import static android.R.attr.id;
+
 /**
  * Created by gretel on 9/25/17.
  */
@@ -30,7 +32,7 @@ public class Tweet extends BaseModel implements Parcelable{
     //list out the attributes
     @PrimaryKey
     @Column
-    Long id;
+    Long id_tweet;
 
     @Column
     private String body;
@@ -57,13 +59,15 @@ public class Tweet extends BaseModel implements Parcelable{
 
     }
 
+    public static Long lastTweetId;
+
 
     public Long getId() {
-        return id;
+        return id_tweet;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.id_tweet = id;
     }
 
     public User getUser() {
@@ -72,14 +76,6 @@ public class Tweet extends BaseModel implements Parcelable{
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public Long getUid() {
-        return id;
-    }
-
-    public void setUid(Long id) {
-        this.id = id;
     }
 
     public String getBody() {
@@ -126,7 +122,7 @@ public class Tweet extends BaseModel implements Parcelable{
     public static Tweet fromJson(JSONObject json) {
         Tweet tweet = new Tweet();
         try {
-            tweet.id = json.getLong("id_str");
+            tweet.id_tweet = json.getLong("id_str");
             tweet.body = json.getString("text");
             tweet.createdAt = json.getString("created_at");
             tweet.retweetCount = json.getInt("retweet_count");
@@ -161,7 +157,7 @@ public class Tweet extends BaseModel implements Parcelable{
     }
 
     protected Tweet(Parcel in) {
-        id = in.readLong();
+        id_tweet = in.readLong();
         body = in.readString();
         createdAt = in.readString();
         retweetCount = in.readInt();
@@ -172,11 +168,11 @@ public class Tweet extends BaseModel implements Parcelable{
     }
 
     public static Tweet byId(long id){
-        return new Select().from(Tweet.class).where(Tweet_Table.id.eq(id)).querySingle();
+        return new Select().from(Tweet.class).where(Tweet_Table.id_tweet.eq(id)).querySingle();
     }
 
     public static List<Tweet> recentItems(){
-        return new Select().from(Tweet.class).orderBy(Tweet_Table.id, false).limit(300).queryList();
+        return new Select().from(Tweet.class).orderBy(Tweet_Table.id_tweet, false).limit(300).queryList();
     }
 
     @Override

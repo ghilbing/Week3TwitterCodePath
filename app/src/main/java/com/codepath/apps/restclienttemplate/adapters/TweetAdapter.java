@@ -1,6 +1,7 @@
 package com.codepath.apps.restclienttemplate.adapters;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.R;
+import com.codepath.apps.restclienttemplate.models.Entity;
+import com.codepath.apps.restclienttemplate.models.Media;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.models.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,8 +37,16 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
     public TweetAdapter(Context context, List<Tweet> tweets){
         mContext = context;
         mTweets = tweets;
-
     }
+
+    private Context getmContext() { return mContext;}
+
+    private OnUserClickListener mListener;
+    public interface OnUserClickListener {
+        void onUserClick(User user);
+    }
+
+
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -59,8 +71,41 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
         holder.tvRetweetCount.setText(String.valueOf(tweet.getRetweetCount()));
         holder.tvTweetAge.setText(tweet.getCreatedAt());
 
+        holder.ivProfileImage.setImageResource(android.R.color.transparent);
         Glide.with(mContext).load(tweet.getUser().getProfileImage()).into(holder.ivProfileImage);
+        holder.ivProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                User user = (User) view.getTag();
+                mListener.onUserClick(user);
+            }
+        });
 
+        holder.ivMedia.setImageResource(android.R.color.transparent);
+        String mediaUrl = mediaUrl(tweet);
+
+        if(mediaUrl != null) {
+            Glide.with(getmContext()).load(mediaUrl).into(holder.ivMedia);
+            holder.ivMedia.setVisibility(View.VISIBLE);
+        } else {
+            holder.ivMedia.setVisibility(View.GONE);
+        }
+
+        holder.tvFavoriteCount.setText(String.valueOf(tweet.getFavoriteCount()));
+
+    }
+
+    @Nullable
+    private static String mediaUrl(Tweet tweet) {
+        Entity entity = tweet.getEntity();
+        if (entity != null) {
+            List<Media> media = entity.getMedia();
+            if (!media.isEmpty()) {
+                return media.get(0).getMediaUrl();
+            }
+        }
+
+        return null;
     }
 
     public void clear() {
@@ -111,6 +156,10 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
         TextView tvTweetAge;
         @Bind(R.id.tvRetweetCount)
         TextView tvRetweetCount;
+        @Bind(R.id.ivMedia)
+        ImageView ivMedia;
+        @Bind(R.id.tvFavoriteCount)
+        TextView tvFavoriteCount;
 
         public ViewHolder (View itemView){
             super(itemView);
@@ -121,4 +170,6 @@ public class TweetAdapter extends RecyclerView.Adapter<TweetAdapter.ViewHolder>{
 
 
     }
+
+
 }

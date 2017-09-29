@@ -25,7 +25,7 @@ public class User extends BaseModel implements Parcelable{
 
     //List the attributes
     @PrimaryKey
-    @Column Long uid;
+    @Column Long id_user;
 
     //private String uid;
     @Column
@@ -59,11 +59,11 @@ public class User extends BaseModel implements Parcelable{
     }
 
     public Long getId() {
-        return uid;
+        return id_user;
     }
 
     public void setId(Long uid) {
-        this.uid = uid;
+        this.id_user = uid;
     }
 
     public String getName() {
@@ -134,7 +134,7 @@ public class User extends BaseModel implements Parcelable{
     public static User fromJson(JSONObject json) {
         User user = new User();
         try {
-            user.uid = json.getLong("id_str");
+            user.id_user = json.getLong("id_str");
             user.name = json.getString("name");
             user.profileImage = json.getString("profile_image_url");
             user.screenName = json.getString("screen_name");
@@ -151,15 +151,15 @@ public class User extends BaseModel implements Parcelable{
     }
 
     public static User byId(long id){
-        return new Select().from(User.class).where(User_Table.uid.eq(id)).querySingle();
+        return new Select().from(User.class).where(User_Table.id_user.eq(id)).querySingle();
     }
 
     public static List<User> recentItems(){
-        return new Select().from(User.class).orderBy(User_Table.uid, false).limit(300).queryList();
+        return new Select().from(User.class).orderBy(User_Table.id_user, false).limit(300).queryList();
     }
 
     protected User(Parcel in) {
-        uid = in.readLong();
+        id_user = in.readLong();
         name = in.readString();
         profileImage = in.readString();
         screenName = in.readString();
@@ -177,7 +177,7 @@ public class User extends BaseModel implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(uid);
+        dest.writeLong(id_user);
         dest.writeString(name);
         dest.writeString(profileImage);
         dest.writeString(screenName);

@@ -1,34 +1,57 @@
 package com.codepath.apps.restclienttemplate.activities;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
+import com.bumptech.glide.Glide;
 import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.TwitterApp;
+import com.codepath.apps.restclienttemplate.TwitterClient;
+import com.codepath.apps.restclienttemplate.fragments.ComposeFragment;
 import com.codepath.apps.restclienttemplate.fragments.MentionsFragment;
 import com.codepath.apps.restclienttemplate.fragments.TimelineFragment;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.models.User;
 import com.codepath.apps.restclienttemplate.utils.SmartFragmentStatePagerAdapter;
 import com.codepath.apps.restclienttemplate.utils.Utils;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.raizlabs.android.dbflow.sql.language.Select;
+
+import org.json.JSONObject;
+import org.parceler.Parcels;
 
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cz.msebera.android.httpclient.Header;
 
+import static android.R.attr.data;
+import static com.codepath.apps.restclienttemplate.R.id.fabCompose;
+import static com.codepath.apps.restclienttemplate.R.id.ivProfileImage;
+import static com.codepath.apps.restclienttemplate.R.id.ivProfilePhoto;
 import static com.codepath.apps.restclienttemplate.R.id.swipeContainer;
+import static com.codepath.apps.restclienttemplate.R.string.tweet;
+import static java.util.Collections.addAll;
 
 public class TimelineActivity extends AppCompatActivity {
 
@@ -37,14 +60,21 @@ public class TimelineActivity extends AppCompatActivity {
     ViewPager viewPager;
     @Bind(R.id.toolbar)
     Toolbar toolbar;
+    @Bind(R.id.ivProfilePhoto)
+    ImageView ivProfilePhoto;
+    public static String loggedUserScreenName;
     TweetPagerAdapter pagerAdapter;
     @Bind(R.id.tabs)
     PagerSlidingTabStrip tabStrip;
+    @Bind(R.id.fabCompose)
+    FloatingActionButton fabCompose;
+  /*  @Bind(R.id.ivAirplaneMode)
+    ImageView ivAirplaneMode;*/
 
 
 
-    /*private TwitterClient client;
-    TweetAdapter mTweetAdapter;
+    private TwitterClient client;
+    /*TweetAdapter mTweetAdapter;
     ArrayList<Tweet> mTweets;
 
     @Bind(R.id.rvTweet)
@@ -63,11 +93,24 @@ public class TimelineActivity extends AppCompatActivity {
         getSupportActionBar().setLogo(R.drawable.ic_logo);
         getSupportActionBar().setDisplayUseLogoEnabled(true);
 
+        client = TwitterApp.getRestClient();
+
         pagerAdapter = new TweetPagerAdapter(getSupportFragmentManager());
 
         viewPager.setAdapter(pagerAdapter);
 
         tabStrip.setViewPager(viewPager);
+
+        setupProfileImage();
+        fabCompose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ComposeFragment composeFragment = new ComposeFragment();
+                FragmentManager fm = getSupportFragmentManager();
+                composeFragment.show(fm, "new tweet");
+            }
+        });
+
 
 
             /*@Override
@@ -103,6 +146,34 @@ public class TimelineActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setupProfileImage(){
+        client.getCredentials(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                final User user = User.fromJson(response);
+                String profileImage = user.getProfileImage();
+                loggedUserScreenName = user.getScreenName();
+                Glide.with(getApplicationContext()).load(profileImage).into(ivProfilePhoto);
+                ivProfilePhoto.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent(getApplicationContext(), ProfileActivity.class);
+                        intent.putExtra("user", Parcels.wrap(user));
+                        startActivity(intent);
+                    }
+                });
+            }
+
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable){
+                Log.d("DEBUG", responseString);
+
+
+            }
+        });
     }
 
     @Override
@@ -148,7 +219,28 @@ public class TimelineActivity extends AppCompatActivity {
         }
     }
 
+    public void onTweet(View view) {
+        FragmentManager fm = getSupportFragmentManager();
+        ComposeFragment composeFragment = ComposeFragment.newInstance();
+        composeFragment.show(fm, "fragment_edit_name");
     }
+
+
+
+    //@Override
+    public void onTweet(Tweet tweet) {
+        ((ComposeFragment.ComposeTweetFragmentListener) pagerAdapter.getRegisteredFragment(0))
+                .onTweet(tweet);
+    }
+
+    public void composeNewTweet(View view){
+        ComposeFragment composeFragment = new ComposeFragment();
+        FragmentManager fm = getSupportFragmentManager();
+        composeFragment.show(fm, "test");
+    }
+
+
+}
 
 
 

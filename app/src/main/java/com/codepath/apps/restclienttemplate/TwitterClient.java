@@ -54,8 +54,9 @@ public class TwitterClient extends OAuthBaseClient {
 		String apiUrl = getApiUrl("statuses/home_timeline.json");
 		// Can specify query string params directly or through RequestParams.
 		RequestParams params = new RequestParams();
-		params.put("count", T_X_PAGE );
-        params.put("since", 1);
+			params.put("count", T_X_PAGE);
+			params.put("since", 1);
+
 		client.get(apiUrl, params, handler);
 	}
 
@@ -93,6 +94,14 @@ public class TwitterClient extends OAuthBaseClient {
 		client.get(apiUrl, params, handler);
 	}
 
+	public void tweet(String status, AsyncHttpResponseHandler handler) {
+		String apiUrl = getApiUrl("statuses/update.json");
+
+		RequestParams params = new RequestParams();
+		params.put("status", status);
+
+		client.post(apiUrl, params, handler);
+	}
 
 
 	// Got this from https://gist.github.com/nesquena/f786232f5ef72f6e10a7
@@ -118,6 +127,17 @@ public class TwitterClient extends OAuthBaseClient {
 		RequestParams params = new RequestParams();
 		params.put("status", body);
 		client.post(apiUrl, params, handler);
+	}
+
+	public void composeTweet(AsyncHttpResponseHandler repsonseHandler, String tweetBody, Boolean isReply, long id) {
+		String apiUrl = getApiUrl("statuses/update.json");
+		//specify the params
+		RequestParams params = new RequestParams();
+		params.put("status", tweetBody);
+		if (isReply) {
+			params.put("in_reply_to_status_id", id);
+		}
+		getClient().post(apiUrl, params, repsonseHandler);
 	}
 
 

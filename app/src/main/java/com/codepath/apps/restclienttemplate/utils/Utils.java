@@ -1,5 +1,9 @@
 package com.codepath.apps.restclienttemplate.utils;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import java.io.IOException;
 
 /**
@@ -7,14 +11,20 @@ import java.io.IOException;
  */
 
 public class Utils {
+
+
     public static boolean checkForInternet() {
-                Runtime runtime = Runtime.getRuntime();
-                try {
-                        Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
-                        int     exitValue = ipProcess.waitFor();
-                        return (exitValue == 0);
-                    } catch (IOException e)          { e.printStackTrace(); }
-                catch (InterruptedException e) { e.printStackTrace(); }
-                return false;
-            }
+        Runtime runtime = Runtime.getRuntime();
+        try {
+            Process ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8");
+            int     exitValue = ipProcess.waitFor();
+            return (exitValue == 0);
+        } catch (IOException e)          { e.printStackTrace(); }
+        catch (InterruptedException e) { e.printStackTrace(); }
+        return false;
+    }
+
+
 }
+
+

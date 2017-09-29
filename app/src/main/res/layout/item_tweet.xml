@@ -29,7 +29,7 @@
 
                 <TextView
                     android:id="@+id/tvTweetFullName"
-                    android:text="Lori Lee"
+                    android:text="Gretel Hilbing"
                     style="@style/BoldText"
                     android:layout_marginRight="10dp"
                     android:layout_width="wrap_content"
@@ -39,7 +39,7 @@
                     android:id="@+id/tvUserName"
                     android:layout_toRightOf="@id/tvTweetFullName"
                     style="@style/SmallLightText"
-                    android:text="\@teekirol"
+                    android:text="\@gretelhilbing"
                     android:gravity="center_vertical"
                     android:layout_alignBottom="@id/tvTweetFullName"
                     android:layout_alignTop="@id/tvTweetFullName"
@@ -56,7 +56,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content" />
 
-                <TextView
+                <com.codepath.apps.restclienttemplate.utils.LinkifieldTextView
                     android:id="@+id/tvBody"
                     style="@style/RegularText"
                     android:layout_below="@id/tvTweetFullName"
@@ -67,6 +67,28 @@
                     android:textColorLink="@color/TwitterBlue"
                     android:layout_marginBottom="10dp"
                     android:layout_height="wrap_content" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
+                    android:id="@+id/ivMedia"
+                    android:gravity="center"
+                    android:layout_below="@id/tvBody"
+                    android:layout_alignTop="@id/buttonPanel"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginBottom="8dp"/>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/buttonPanel"
+                    android:gravity="center"
+                    android:layout_below="@+id/rlTweetContent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
 
                 <Button
                     android:id="@+id/btnReply"
@@ -104,8 +126,19 @@
                     style="?android:attr/borderlessButtonStyle"
                     android:layout_marginLeft="80dp"
                     android:background="@drawable/ic_favorite"/>
+                <TextView
+                    android:id="@+id/tvFavoriteCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="20dp"
+                    android:gravity="center_vertical"
+                    style="@style/SmallLightText"
+                    android:text="55"
+                    android:layout_marginLeft="5dp"
+                    android:layout_alignBottom="@id/btnRetweet"
+                    android:layout_toEndOf="@id/btnRetweet"
+                    android:layout_toRightOf="@+id/btnFavorite"/>
 
-            </RelativeLayout>
+                    </RelativeLayout>
 
         </RelativeLayout>
 

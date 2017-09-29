@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -19,12 +20,24 @@ import com.codepath.apps.restclienttemplate.R;
 import com.codepath.apps.restclienttemplate.TwitterClient;
 import com.codepath.apps.restclienttemplate.adapters.TweetAdapter;
 import com.codepath.apps.restclienttemplate.models.Tweet;
+import com.codepath.apps.restclienttemplate.models.User;
 import com.codepath.apps.restclienttemplate.utils.EndlessRecyclerViewScrollListener;
+import com.codepath.apps.restclienttemplate.utils.Utils;
+import com.loopj.android.http.JsonHttpResponseHandler;
+import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.sql.language.Select;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import cz.msebera.android.httpclient.Header;
+
+import static com.codepath.apps.restclienttemplate.R.id.fabCompose;
 
 /**
  * Created by gretel on 9/25/17.
@@ -39,12 +52,20 @@ public abstract class TweetsFragment extends Fragment {
     RecyclerView mRecycler;
 
     TweetAdapter mAdapter;
+    TwitterClient client;
+    private ArrayList<Tweet> tweetList;
 
 
 
     public TweetsFragment() {
 
     }
+
+    /*public void populateMoreTimeline(){
+        if (Tweet.lastTweetId != null){
+            populateTimeLine("max_id", Tweet.lastTweetId);
+        }
+    }*/
 
     public abstract void populateTimeline(String maxId);
 
@@ -69,6 +90,9 @@ public abstract class TweetsFragment extends Fragment {
 
         mAdapter = new TweetAdapter(getActivity(), new ArrayList<Tweet>());
         mRecycler.setAdapter(mAdapter);
+     /*   mRecycler.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST);
+        mRecycler.addItemDecoration(itemDecoration);*/
+
         mRecycler.setLayoutManager(new LinearLayoutManager(this.getActivity()));
        /* mRecycler.addOnScrollListener(new EndlessRecyclerViewScrollListener() {
             @Override
@@ -78,7 +102,7 @@ public abstract class TweetsFragment extends Fragment {
                     populateTimeline(null);
                 } else if (mAdapter.getItemCount() >= TwitterClient.T_X_PAGE){
                     Tweet oldest = mAdapter.getItem(mAdapter.getItemCount()-1);
-                    populateTimeline(oldest.getUid());
+                    populateTimeline(oldest.getId());
                 }
             }
         });*/
@@ -97,6 +121,33 @@ public abstract class TweetsFragment extends Fragment {
 
     }
 
+
+    /*private void populateTimeline(final String sinceOrMaxId, long count) {
+
+        client.getHomeTimeline(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+                Log.d("DEBUG", response.toString());
+                Boolean clearOfflineTweets = Boolean.FALSE;
+                if (sinceOrMaxId.equals("since_id")) {
+                    tweetList.clear();
+                    new Delete().from(Tweet.class).execute(); // all records
+                    new Delete().from(User.class).execute(); // all records
+                }
+                tweetList.addAll(Tweet.fromJson(response));
+                mAdapter.notifyDataSetChanged();
+                swipeContainer.setRefreshing(false);
+
+            }
+
+            @Override
+            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                Log.d("DEBUG", "onFailure" + errorResponse.toString());
+                swipeContainer.setRefreshing(false);
+            }
+        }, sinceOrMaxId, count);
+    }*/
+
     protected boolean isNetworkAvailable(){
         ConnectivityManager cm = (ConnectivityManager) getActivity().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
@@ -114,6 +165,30 @@ public abstract class TweetsFragment extends Fragment {
         mAdapter.notifyDataSetChanged();
         swipeContainer.setRefreshing(false);
     }
+
+   /* @Override
+    public void onResume() {
+        super.onResume();
+        if (!Utils.checkForInternet()) {
+            swipeContainer.setEnabled(false);
+            List<Tweet> queryResults = new Select().from(Tweet.class)
+                    .orderBy("id DESC").execute();
+            // Load the result into the adapter using `addAll`
+
+            tweetList.clear();
+            tweetList.addAll(queryResults);
+            mAdapter.notifyDataSetChanged();
+
+        } else {
+            //fabCompose.setVisibility(View.VISIBLE);
+            //get timeline here
+            populateTimeline("since_id", (long) 1);
+            //setup swipe to refresh
+
+            wipeToRefreshView();
+        }
+    }*/
+
 
 
 }
